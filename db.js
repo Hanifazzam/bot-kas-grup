@@ -1,6 +1,9 @@
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database('./kas.db');
 
+// Impor fungsi untuk simpan ke Google Sheet
+const { simpanKeSheets } = require('./googleSheet');
+
 // Buat tabel jika belum ada
 db.run(`
   CREATE TABLE IF NOT EXISTS kas_grup (
@@ -19,10 +22,17 @@ db.run(`
 function simpanTransaksi(grup_id, user_nama, tipe, jumlah, keterangan) {
   const tanggal = new Date().toISOString();
   const bulan = tanggal.slice(0, 7);
+
   db.run(
     `INSERT INTO kas_grup (grup_id, user_nama, tanggal, tipe, jumlah, keterangan, bulan) 
      VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [grup_id, user_nama, tanggal, tipe, jumlah, keterangan, bulan]
+    [grup_id, user_nama, tanggal, tipe, jumlah, keterangan, bulan],
+    function (err) {
+      if (!err) {
+        // Setelah berhasil simpan ke SQLite, simpan ke Google Sheets
+        simpanKeSheets({ grup_id, user_nama, tanggal, tipe, jumlah, keterangan, bulan });
+      }
+    }
   );
 }
 
