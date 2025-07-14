@@ -1,4 +1,11 @@
 {
+  "name": "bot-kas-wa",
+  "version": "1.0.0",
+  "description": "Bot WhatsApp untuk mencatat keuangan kas grup",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
   "dependencies": {
     "@whiskeysockets/baileys": "^6.7.18",
     "googleapis": "^152.0.0",
